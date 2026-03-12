@@ -177,7 +177,7 @@ class TestInitRealtimeLogging:
         tech_msg = tech_msgs[0]
         
         assert tech_msg['namespace'] == '/crawl'
-        assert tech_msg['broadcast'] is True
+        assert tech_msg['broadcast'] is False
         
         data = tech_msg['data']
         assert data['category'] == 'error' # error_logger -> error category

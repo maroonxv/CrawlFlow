@@ -3,46 +3,54 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-# Assuming .env is in the backend root directory (../../..)
 backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-env_path = os.path.join(backend_dir, '.env')
+env_path = os.path.join(backend_dir, ".env")
 load_dotenv(env_path)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+_engine = None
 
-if not DATABASE_URL:
-    # Fallback or error if not found
-    raise ValueError("DATABASE_URL not found in .env file")
-
-# Create engine
-# pool_recycle to prevent MySQL connection timeout
-# Increased pool_size and max_overflow to handle concurrent requests and websocket connections
-engine = create_engine(
-    DATABASE_URL, 
-    pool_recycle=3600, 
-    pool_pre_ping=True,
-    pool_size=20,
-    max_overflow=20
-)
-
-# Create session factory
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Scoped session for thread safety in web apps
+SessionLocal = sessionmaker(autocommit=False, autoflush=False)
 db_session = scoped_session(SessionLocal)
 
-# Base class for models
 Base = declarative_base()
 Base.query = db_session.query_property()
 
+
+def get_engine():
+    """Create and cache the SQLAlchemy engine on first use."""
+    global _engine
+
+    if _engine is not None:
+        return _engine
+
+    if not DATABASE_URL:
+        raise RuntimeError("DATABASE_URL not found in backend/.env")
+
+    engine_kwargs = {"pool_pre_ping": True}
+    if not DATABASE_URL.startswith("sqlite"):
+        engine_kwargs.update(
+            pool_recycle=3600,
+            pool_size=20,
+            max_overflow=20,
+        )
+
+    _engine = create_engine(DATABASE_URL, **engine_kwargs)
+    SessionLocal.configure(bind=_engine)
+    db_session.configure(bind=_engine)
+    return _engine
+
+
 def init_db():
-    """Initialize database tables"""
+    """Initialize database tables."""
     import src.crawl.infrastructure.database.models
-    Base.metadata.create_all(bind=engine)
+
+    Base.metadata.create_all(bind=get_engine())
+
 
 def get_db():
-    """Dependency for getting DB session"""
+    """Dependency for getting DB session."""
+    get_engine()
     db = SessionLocal()
     try:
         yield db

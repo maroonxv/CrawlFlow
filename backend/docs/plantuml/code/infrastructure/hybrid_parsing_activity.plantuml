@@ -4,77 +4,77 @@ skinparam ActivityBackgroundColor #FEFECE
 skinparam ActivityBorderColor #A80036
 skinparam ArrowColor #A80036
 
-title 混合解析模式 (Hybrid Parsing) - 动态渲染决策流程
+title 混合解析模式 - 动态渲染决策流程
 
-|Application Layer|
+|应用层|
 start
 :CrawlerService 从队列取出 URL;
 
-|Infrastructure Layer (Static)|
-partition "Step 1: 静态尝试" {
+|基础设施层（静态抓取）|
+partition "步骤 1：静态尝试" {
     :调用 HttpClient.get(url)
 (requests);
     :发送 HTTP GET 请求;
-    :接收响应 (Status, Content);
+    :接收响应（状态码、内容）;
 }
 
-|Application Layer|
-partition "Step 2: 启发式检测 (Heuristic Check)" {
-    if (请求成功?) then (Yes)
+|应用层|
+partition "步骤 2：启发式检测" {
+    if (请求成功？) then (是)
         :检查 Content-Length < 100?;
         note right
-          规则1: 内容过短
+          规则 1：内容过短
           可能是空壳页面
         end note
         
-        if (是空壳?) then (No)
-            :检查 SPA 标记?
+        if (是空壳？) then (否)
+            :检查 SPA 标记？
 (id="app", "root", "__next");
             note right
-              规则2: 特征检测
+              规则 2：特征检测
               常见前端框架挂载点
             end note
             
-            if (发现标记?) then (No)
-                :检查脚本密度?
-(Script标签占比高 & 文本少);
-                if (是脚本页面?) then (No)
+            if (发现标记？) then (否)
+                :检查脚本密度？
+(Script 标签占比高且正文较少);
+                if (是脚本页面？) then (否)
                     :判定为 **静态页面**;
                     -> 使用静态响应;
-                else (Yes)
+                else (是)
                     :判定为 **动态页面**;
                 endif
-            else (Yes)
+            else (是)
                 :判定为 **动态页面**;
             endif
-        else (Yes)
+        else (是)
             :判定为 **动态页面**;
         endif
-    else (No)
+    else (否)
         :处理 HTTP 错误;
         stop
     endif
 }
 
-|Infrastructure Layer (Dynamic)|
-partition "Step 3: 动态渲染 (Playwright)" {
-    if (需要动态渲染?) then (Yes)
+|基础设施层（动态渲染）|
+partition "步骤 3：动态渲染（Playwright）" {
+    if (需要动态渲染？) then (是)
         :记录日志: [Hybrid] 切换至浏览器渲染;
         :调用 PlaywrightClient.get(url);
         :启动/复用 Chromium 实例;
         :Page.goto(url);
-        :等待网络空闲 (NetworkIdle);
+        :等待网络空闲（NetworkIdle）;
         :获取渲染后的 DOM HTML;
         :封装为 HttpResponse;
-    else (No)
+    else (否)
         -> 已经是静态响应;
     endif
 }
 
-|Application Layer|
+|应用层|
 :返回最终 HttpResponse;
-:提取元数据 (Metadata);
-:提取链接 (Links);
+:提取元数据（Metadata）;
+:提取链接（Links）;
 stop
 
 @enduml

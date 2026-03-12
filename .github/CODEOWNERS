@@ -1,0 +1,8 @@
+# Replace the example handles below with real GitHub usernames before enabling
+# automatic reviewer assignment through CODEOWNERS.
+#
+# Example:
+# * @your-github-username
+# /backend/ @your-backend-maintainer
+# /frontend/ @your-frontend-maintainer
+# /docs/ @your-docs-maintainer

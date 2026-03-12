@@ -1,0 +1,39 @@
+name: 缺陷报告
+description: 报告 CrawlFlow 中可稳定复现的问题
+title: "[缺陷]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 问题概述
+      description: 当前出现了什么问题？你原本预期的行为是什么？
+      placeholder: 请简要描述缺陷现象以及预期行为。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请按顺序列出复现该问题所需的具体步骤。
+      placeholder: |
+        1. 启动后端服务 ...
+        2. 打开前端并创建一个任务 ...
+        3. 观察到 ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 运行环境
+      description: 请尽量说明操作系统、Python 版本、Node 版本、数据库环境，以及相关浏览器信息。
+      placeholder: Windows 11，Python 3.13，Node 20，MySQL 8，Chrome 134
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志或截图
+      description: 仅粘贴定位问题所需的最小日志信息，提交前请移除所有敏感信息。
+      render: shell
