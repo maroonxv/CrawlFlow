@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[2]
 BACKEND_DIR = ROOT_DIR / "backend"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
@@ -59,4 +59,3 @@ def test_page_crawled_event_broadcasts_crawl_log():
     assert payload["event_type"] == "PageCrawledEvent"
     assert payload["data"]["url"] == "http://example.com"
     assert payload["data"]["title"] == "Example Domain"
-

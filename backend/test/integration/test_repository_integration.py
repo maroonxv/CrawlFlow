@@ -12,7 +12,8 @@ from src.crawl.domain.value_objects.crawl_strategy import CrawlStrategy
 @pytest.fixture(scope="module")
 def setup_database():
     """Ensure tables exist before running tests"""
-    from src.shared.db_manager import engine, Base
+    from src.shared.db_manager import get_engine, Base
+    engine = get_engine()
     # Drop all tables to ensure fresh schema
     Base.metadata.drop_all(bind=engine)
     init_db()
