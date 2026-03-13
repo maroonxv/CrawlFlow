@@ -1,0 +1,34 @@
+name: 功能建议
+description: 为 CrawlFlow 提出一个改进建议
+title: "[功能]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要解决的问题
+      description: 你希望解决的是哪类流程痛点、功能限制，或用户使用障碍？
+      placeholder: 目前很难做到……
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+      description: 请描述你期望新增的功能、界面改动，或架构改进方向。
+      placeholder: 我们可以增加……
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 备选方案
+      description: 你是否考虑过其他可行方案？
+      placeholder: 另一个可选方案是……
+  - type: textarea
+    id: impact
+    attributes:
+      label: 预期影响
+      description: 这项改动会让谁受益？我们可以怎样衡量它是否成功？
+      placeholder: 这会帮助到那些……
