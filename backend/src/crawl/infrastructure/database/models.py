@@ -65,7 +65,7 @@ class PdfResultModel(Base):
     error_message = Column(Text, nullable=True)
     
     # Content
-    content_text = Column(LONGTEXT, nullable=True)
+    content_text = Column(Text().with_variant(LONGTEXT, "mysql"), nullable=True)
     
     # Metadata
     meta_title = Column(Text, nullable=True)
