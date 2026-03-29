@@ -1,5 +1,6 @@
 # Local Codex metadata
 .codex/
+.worktrees/
 
 # Python
 __pycache__/
