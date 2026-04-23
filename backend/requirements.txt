@@ -10,7 +10,7 @@ flask-socketio>=5.0.0
 SQLAlchemy>=2.0.0
 python-json-logger>=3.0.0
 
-PyMySQL>=1.1.0
+PyMySQL>=1.1.2
 pandas>=2.0.0
 openpyxl>=3.1.0
 playwright>=1.40.0
